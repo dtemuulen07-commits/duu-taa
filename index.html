@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="mn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101216">
+<meta name="description" content="Монгол дууны нэрийг хэдхэн секундэд таах тоглоом.">
+<title>Дуу Таа</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%238b7bff'/%3E%3Cpath d='M12 9v11.5a3.5 3.5 0 1 0 2 3.2V13l8-2v7.5a3.5 3.5 0 1 0 2 3.2V7z' fill='%23101216'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <button id="btn-help" class="icon-btn" type="button" data-i18n-label="helpTitle">?</button>
+    <h1 id="brand" class="brand">Дуу Таа</h1>
+    <div class="top-right">
+      <button id="btn-stats" class="icon-btn" type="button" data-i18n-label="statsTitle">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      </button>
+      <button id="btn-lang" class="lang-btn" type="button">EN</button>
+    </div>
+  </header>
+
+  <nav class="modes" role="tablist">
+    <button type="button" role="tab" data-mode="daily" data-i18n="daily"></button>
+    <button type="button" role="tab" data-mode="unlimited" data-i18n="unlimited"></button>
+    <button type="button" role="tab" data-mode="artist" data-i18n="artist"></button>
+  </nav>
+
+  <div id="artist-row" class="artist-row" hidden>
+    <select id="artist-select" data-i18n-label="chooseArtist"></select>
+  </div>
+
+  <main class="game">
+    <p id="subtitle" class="subtitle"></p>
+    <ol id="attempts" class="attempts"></ol>
+
+    <section id="play-area" class="play-area">
+      <div class="timeline" id="timeline">
+        <div class="timeline-unlocked" id="tl-unlocked"></div>
+        <div class="timeline-fill" id="tl-fill"></div>
+      </div>
+      <div class="timeline-labels">
+        <span id="clip-label">0.1s</span>
+        <span>8s</span>
+      </div>
+
+      <div class="controls">
+        <label class="volume">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+          <input id="volume" type="range" min="0" max="100" value="70" data-i18n-label="volume">
+        </label>
+        <button id="btn-play" class="play-btn" type="button" data-i18n-label="play" disabled>
+          <svg id="icon-play" viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg>
+          <svg id="icon-stop" viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" hidden><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg>
+        </button>
+        <span class="controls-spacer"></span>
+      </div>
+
+      <p id="status" class="status" aria-live="polite"></p>
+
+      <div class="guess">
+        <div class="combo">
+          <input id="guess-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-controls="suggestions" aria-expanded="false">
+          <ul id="suggestions" class="suggestions" role="listbox" hidden></ul>
+        </div>
+        <div class="guess-actions">
+          <button id="btn-skip" class="btn" type="button"></button>
+          <button id="btn-submit" class="btn btn-primary" type="button" data-i18n="guess"></button>
+        </div>
+      </div>
+    </section>
+
+    <section id="result" class="result" hidden>
+      <h2 id="result-title"></h2>
+      <p id="result-sub" class="muted"></p>
+      <div class="song-card">
+        <p id="result-song" class="song-title"></p>
+        <p id="result-artist" class="muted"></p>
+      </div>
+      <div class="embed" id="embed"></div>
+      <p id="result-grid" class="grid-line"></p>
+      <div class="result-actions">
+        <button id="btn-share" class="btn btn-primary" type="button" data-i18n="share"></button>
+        <button id="btn-next" class="btn" type="button"></button>
+      </div>
+      <p id="countdown" class="muted countdown"></p>
+    </section>
+  </main>
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<dialog id="dlg-help" class="dialog">
+  <div class="dialog-head">
+    <h2 data-i18n="helpTitle"></h2>
+    <button class="icon-btn" type="button" data-close data-i18n-label="close">✕</button>
+  </div>
+  <ul id="help-list" class="help-list"></ul>
+  <div class="legend">
+    <span><i class="sq sq-correct"></i><span data-i18n="legendCorrect"></span></span>
+    <span><i class="sq sq-artist"></i><span data-i18n="legendArtist"></span></span>
+    <span><i class="sq sq-wrong"></i><span data-i18n="legendWrong"></span></span>
+    <span><i class="sq sq-skip"></i><span data-i18n="legendSkip"></span></span>
+  </div>
+  <button class="btn btn-primary wide" type="button" data-close data-i18n="startPlaying"></button>
+</dialog>
+
+<dialog id="dlg-stats" class="dialog">
+  <div class="dialog-head">
+    <h2 data-i18n="statsTitle"></h2>
+    <button class="icon-btn" type="button" data-close data-i18n-label="close">✕</button>
+  </div>
+  <div class="seg" id="stats-tabs">
+    <button type="button" data-kind="daily" data-i18n="daily"></button>
+    <button type="button" data-kind="unlimited" data-i18n="unlimited"></button>
+  </div>
+  <div class="stat-row" id="stat-row"></div>
+  <h3 data-i18n="distribution"></h3>
+  <div id="dist" class="dist"></div>
+</dialog>
+
+<div id="yt-wrap" class="yt-wrap" aria-hidden="true"><div id="yt-hidden"></div></div>
+
+<script src="app.js"></script>
+<script src="https://www.youtube.com/iframe_api" async></script>
+</body>
+</html>
